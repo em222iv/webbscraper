@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <?php
 
 $data = curl_get_request('https://coursepress.lnu.se/kurser/');
@@ -15,13 +16,58 @@ function getItems($dom,$data,$array) {
 
             $courseCode = getCourseCode($dom,$item->getAttribute('href'));
             $coursePlan = getCoursePlan($dom,$item->getAttribute('href'));
-            $urlArray[] = $item->nodeValue . "-->" . $item->getAttribute('href') . "-->" . $courseCode . "<br/>" . $coursePlan ;
-
+            $courseEntryText = getCourseEntryText($dom,$item->getAttribute('href'));
+            $coursePost = getLatestPost($dom,$item->getAttribute('href'));
+            $urlArray[] = "<br/><br/> Coursename: ".$item->nodeValue . "--> Link: " . $item->getAttribute('href') . "--> Coursecode: " . $courseCode . "<br/> Courseplan: " . $coursePlan
+            . "<br/>Introduktionstext: " . $courseEntryText ."<br/> Senaste inlägget: " . $coursePost ."<br/>";
         }
-
+        $urlArray = array_map('utf8_encode', $urlArray);
+        var_dump($urlArray);
     }
     nextPage($dom,$data,$urlArray);
 }
+
+function getLatestPost($dom,$courseURL) {
+    $courseURL = curl_get_request($courseURL);
+    if($dom->loadHTML($courseURL)){
+
+        $xpath = new DOMXPath($dom);
+
+        $getLatestPostTitle = $xpath->query('//header[@class="entry-header"]/h1[@class="entry-title"]')->item(0);
+        $firstTitle = $getLatestPostTitle->firstChild;
+        $title = $firstTitle->nodeValue;
+
+
+        $getLatestPostTitle = $xpath->query('//header[@class="entry-header"]/p')->item(0);
+
+
+        $authorDate = $getLatestPostTitle->textContent;
+        if($title =! null){
+            return $title . " | " . $authorDate;
+        }else {
+            return "Inga inlägg";
+        }
+
+    }
+}
+
+function getCourseEntryText($dom,$courseURL) {
+    $courseURL = curl_get_request($courseURL);
+    if($dom->loadHTML($courseURL)){
+
+        $xpath = new DOMXPath($dom);
+
+        $courseEntryText = $xpath->query('//div[@class="entry-content"]/p/text()')->item(0);
+        if($courseEntryText != null) {
+            return $courseEntryText->textContent;
+        }else {
+            return "No entry text";
+        }
+    }
+}
+
+
+
 
 function getCourseCode($dom,$courseURL) {
     $courseURL = curl_get_request($courseURL);
@@ -31,7 +77,11 @@ function getCourseCode($dom,$courseURL) {
 
         $courseCode = $xpath->query('//div[@id="header-wrapper"]/ul/li[last()]/a/text()')->item(0);
 
-        return $courseCode->textContent;
+        if($courseCode != null){
+            return $courseCode->textContent;
+        }else {
+            return "No coursecode";
+        }
     }
 }
 
@@ -43,19 +93,25 @@ function getCoursePlan($dom,$courseURL) {
 
         $xpath = new DOMXPath($dom);
 
-        $coursePlan = $xpath->query('.//a/text()')->length == 8;
-        var_dump($coursePlan);
-        return $coursePlan->textContent;
+        $coursePlan = $xpath->query('//ul[@class="sub-menu"]/li/a/text()[contains(., "Kursplan")]')->item(0);
+
+        $coursePLan = $coursePlan->parentNode;
+
+        if($coursePLan != null){
+
+            return $coursePLan->getAttribute('href');
+        }else {
+
+            return "No Courseplan";
+        }
     }
-
-
 }
 function nextPage($dom,$data,$urlArray) {
 
     if($dom->loadHTML($data)){
 
         $xpath = new DOMXPath($dom);
-        echo "<br/><br/>";
+        echo "<br/><br/><br/><br/><br/><br/><br/><br/><br/>";
         $nextPageUrl = $xpath->query("//div[@id='pag-bottom']/div[@class='pagination-links']/a[@class='next page-numbers']");
 
         foreach($nextPageUrl as $href){
