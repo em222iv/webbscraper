@@ -1,6 +1,5 @@
 <?php
 
-
 $date = time();
 $data = curl_get_request('https://coursepress.lnu.se/kurser/');
 $dom = new DomDocument();
@@ -12,7 +11,6 @@ echo "</form>";
 echo "<form method='post'>";
 echo "<input type='submit' name='submit1' value='Scrape'>";
 echo "</form>";
-
 
 $p = json_decode(file_get_contents('filename.json'));
 if($p->{"time"} <= time() - (60*5)){
@@ -114,7 +112,6 @@ function getCoursePlan($dom,$courseURL) {
 
             return $coursePLan->getAttribute('href');
         }else {
-
             return "No Courseplan";
         }
     }
@@ -136,7 +133,6 @@ function nextPage($dom,$data,$urlArray) {
             file_put_contents('filename.json', json_encode($JSON));
             $JSON = json_decode(file_get_contents('filename.json'));
             print_r($JSON);
-
         }
         $nextPageUrl = curl_get_request("https://coursepress.lnu.se" . $nextPageUrl);
 
@@ -147,7 +143,9 @@ function nextPage($dom,$data,$urlArray) {
 }
 
 function curl_get_request($url) {
+
     $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: em222iv"));
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
     $data = curl_exec($ch);
