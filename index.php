@@ -36,14 +36,15 @@ function getItems($dom,$data,$array) {
 
         foreach($items as $item){
 
+            if(substr($item->getAttribute('href'), 0, 31) == "https://coursepress.lnu.se/kurs"){
+                $courseCode = getCourseCode($dom,$item->getAttribute('href'));
+                $coursePlan = getCoursePlan($dom,$item->getAttribute('href'));
+                $courseEntryText = getCourseEntryText($dom,$item->getAttribute('href'));
+                $coursePost = getLatestPost($dom,$item->getAttribute('href'));
 
-            $courseCode = getCourseCode($dom,$item->getAttribute('href'));
-            $coursePlan = getCoursePlan($dom,$item->getAttribute('href'));
-            $courseEntryText = getCourseEntryText($dom,$item->getAttribute('href'));
-            $coursePost = getLatestPost($dom,$item->getAttribute('href'));
-
-            $urlArray[] = array( "Coursename: " => $item->nodeValue, "Länk: " => $item->getAttribute('href'), "Coursecode: " => $courseCode , "Courseplan: " => $coursePlan,
-            "Introduktionstext: " => $courseEntryText, "Senaste inlägget: " => $coursePost."<br/><br/>");
+                $urlArray[] = array( "Coursename: " => $item->nodeValue, "Länk: " => $item->getAttribute('href'), "Coursecode: " => $courseCode , "Courseplan: " => $coursePlan,
+                "Introduktionstext: " => $courseEntryText, "Senaste inlägget: " => $coursePost."<br/><br/>");
+            }
         }
     }
     nextPage($dom,$data,$urlArray);
