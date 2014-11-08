@@ -16,8 +16,17 @@ samtidigt som det ger en bra objectorieterad uppdelning av datat.
 Det ligger ungefär under samma etiska aspekter som i verkligen, man kan inte ta någon annans bok och ge ut som sin egen.
 <p/>
 
-Vad finns det för risker med applikationer som innefattar automatisk skrapning av webbsidor? Nämn minst ett par stycken!
-Tänk dig att du skulle skrapa en sida gjord i ASP.NET WebForms. Vad för extra problem skulle man kunna få då?
-Välj ut två punkter kring din kod du tycker är värd att diskutera vid redovisningen. Det kan röra val du gjort, tekniska lösningar eller lösningar du inte är riktigt nöjd med.
+<h3>Vad finns det för risker med applikationer som innefattar automatisk skrapning av webbsidor? Nämn minst ett par stycken!<h3/>
+<p>Det måste underhållas, ifall minsta ändring sker på någon av sidorna som skrapas så måste detta korrigeras vid skrapning. Om man många använder applikationen sätter det stor press på sidorna som skrapas. 
+<p/>
+
+<h3>Tänk dig att du skulle skrapa en sida gjord i ASP.NET WebForms. Vad för extra problem skulle man kunna få då?<h3/>
+<p>LOL
+<p/>
+
+<h3>Välj ut två punkter kring din kod du tycker är värd att diskutera vid redovisningen. Det kan röra val du gjort, tekniska lösningar eller lösningar du inte är riktigt nöjd med.<h3/>
+<p>Nu görs allting via en indexsida. finns det någon speciellt bestpractice eller sätt att bygga en skrapa på?
+<p/>
+
 Hitta ett rättsfall som handlar om webbskrapning. Redogör kort för detta.
 Känner du att du lärt dig något av denna uppgift?
