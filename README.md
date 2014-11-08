@@ -28,5 +28,11 @@ Det ligger ungefär under samma etiska aspekter som i verkligen, man kan inte ta
 <p>Nu görs allting via en indexsida. finns det någon speciellt bestpractice eller sätt att bygga en skrapa på?
 <p/>
 
-Hitta ett rättsfall som handlar om webbskrapning. Redogör kort för detta.
-Känner du att du lärt dig något av denna uppgift?
+<h3>Hitta ett rättsfall som handlar om webbskrapning. Redogör kort för detta.<h3/>
+<p>
+<p/>
+
+
+<h3>Känner du att du lärt dig något av denna uppgift?<h3/>
+<p>Uppgiften var intressant och bra i att lära ut grunderna för webskrapning.
+<p/>
