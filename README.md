@@ -17,7 +17,7 @@ Också för att göra olika typer av analyser av webben eller olika sidor på de
 <h3>Vilka etiska aspekter bör man fundera kring vid webbskrapning?<h3/>
 <p>Man bör fråga om lov innan man skrapar då det kan påverka server. Man bör också vara noga med att ge källförteckning till den datan man skrapar.
 Det ligger ungefär under samma etiska aspekter som i verkligen, man kan inte ta någon annans bok och ge ut som sin egen.
-<p/>
+<p/> 
 
 <h3>Vad finns det för risker med applikationer som innefattar automatisk skrapning av webbsidor? Nämn minst ett par stycken!<h3/>
 <p>Det måste underhållas, ifall minsta ändring sker på någon av sidorna som skrapas så måste detta korrigeras vid skrapning. Om man många använder applikationen sätter det stor press på sidorna som skrapas. 
