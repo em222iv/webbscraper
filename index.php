@@ -1,5 +1,5 @@
 <?php
-
+//hämtar ut tid och visar användaren knapparna för att använda skrapan
 $date = time();
 echo "<form method='post'>";
 echo "<input type='submit' name='submit' value='JSON-file'>";
@@ -7,17 +7,18 @@ echo "</form>";
 echo "<form method='post'>";
 echo "<input type='submit' name='submit1' value='Scrape'>";
 echo "</form>";
+//gör en request
 $data = curl_get_request('https://coursepress.lnu.se/kurser/');
 $dom = new DomDocument();
+//skriver in timestamp till arrayen, för att se då skrapninge gjordes
 $array = array("time" => "Tid för senaste skrapningen: " .$date."<br/><br/>");
 
-
-
+//ser ifall det har gått 5 min sen senaste skrapningen, isåfall, gör en ny skrapningen
 $p = json_decode(file_get_contents('filename.json'));
 if($p->{"time"} <= time() - (60*5)){
     getItems($dom,$data,$array);
 }
-
+//ser ifall användaren vill se vad som skrapats eller ifall denne vill göra en nu skrapning
 if(isset($_POST['submit'])) {
     $p = json_decode(file_get_contents('filename.json'));
     print_r($p);
@@ -26,6 +27,8 @@ if(isset($_POST['submit1'])) {
     getItems($dom,$data,$array);
 }
 
+
+//metod för att loopa igenom alla sidor på coursepresssidan
 function getItems($dom,$data,$array) {
     $urlArray = $array;
 
@@ -33,22 +36,28 @@ function getItems($dom,$data,$array) {
         $xpath = new DOMXPath($dom);
         $items = $xpath->query('//ul[@id="blogs-list"]//div[@class="item-title"]/a');
 
+        //loopen som sammanställer all data
         foreach($items as $item){
-
+            //om det är en kurssida, hämta ut informationen ur den till arrayen
             if(substr($item->getAttribute('href'), 0, 31) == "https://coursepress.lnu.se/kurs"){
+                //kurskod
                 $courseCode = getCourseCode($dom,$item->getAttribute('href'));
+                //kursplans länk
                 $coursePlan = getCoursePlan($dom,$item->getAttribute('href'));
+                //introduktionstext
                 $courseEntryText = getCourseEntryText($dom,$item->getAttribute('href'));
+                //första posten på sidan
                 $coursePost = getLatestPost($dom,$item->getAttribute('href'));
-
+                //skicka in arrayer med info i arrayen för att kunna få en JSON-struktur senare
                 $urlArray[] = array( "Coursename: " => $item->nodeValue, "Länk: " => $item->getAttribute('href'), "Coursecode: " => $courseCode , "Courseplan: " => $coursePlan,
                 "Introduktionstext: " => $courseEntryText, "Senaste inlägget: " => $coursePost."<br/><br/>");
             }
         }
     }
+    //kolla nästa sida
     nextPage($dom,$data,$urlArray);
 }
-
+//senaste posten hämtas ut
 function getLatestPost($dom,$courseURL) {
     $courseURL = curl_get_request($courseURL);
     if($dom->loadHTML($courseURL)){
@@ -65,7 +74,7 @@ function getLatestPost($dom,$courseURL) {
             return $title . " | " . $authorDate;
     }
 }
-
+//introduktionstexten hämtas här
 function getCourseEntryText($dom,$courseURL) {
     $courseURL = curl_get_request($courseURL);
     if($dom->loadHTML($courseURL)){
@@ -80,7 +89,7 @@ function getCourseEntryText($dom,$courseURL) {
         }
     }
 }
-
+//kurskoden hämtas här
 function getCourseCode($dom,$courseURL) {
     $courseURL = curl_get_request($courseURL);
     if($dom->loadHTML($courseURL)){
@@ -96,31 +105,25 @@ function getCourseCode($dom,$courseURL) {
         }
     }
 }
-
+//kursplanen hämtas här
 function getCoursePlan($dom,$courseURL) {
-
     $courseURL = curl_get_request($courseURL);
-
     if($dom->loadHTML($courseURL)){
-
         $xpath = new DOMXPath($dom);
 
         $coursePlan = $xpath->query('//ul[@class="sub-menu"]/li/a/text()[contains(., "Kursplan")]')->item(0);
-
         $coursePLan = $coursePlan->parentNode;
 
         if($coursePLan != null){
-
             return $coursePLan->getAttribute('href');
         }else {
             return "No Courseplan";
         }
     }
 }
+// går till nästa sida ifall det finns en
 function nextPage($dom,$data,$urlArray) {
-
     if($dom->loadHTML($data)){
-
         $xpath = new DOMXPath($dom);
 
         $nextPageUrl = $xpath->query("//div[@id='pag-bottom']/div[@class='pagination-links']/a[@class='next page-numbers']");
@@ -128,10 +131,12 @@ function nextPage($dom,$data,$urlArray) {
         foreach($nextPageUrl as $href){
             $nextPageUrl =  $href->getAttribute('href') . "<br/>";
         }
-        if($nextPageUrl == 1){
 
+        //om det inte finns en ny sida, gå till metod för att spara ner till JSON-fil
+        if($nextPageUrl == 1){
             saveJSON($urlArray);
         }
+
         $nextPageUrl = curl_get_request("https://coursepress.lnu.se" . $nextPageUrl);
 
         if(strlen($nextPageUrl) > 0){
@@ -139,7 +144,7 @@ function nextPage($dom,$data,$urlArray) {
         }
     }
 }
-
+//sparar en arrayen till objekt för att sedan spara ner det till JSON-format
 function saveJSON($urlArray) {
     $amountOfCourses = count($urlArray);
     array_unshift($urlArray, "Kurser just nu: ".($amountOfCourses= $amountOfCourses-1));
@@ -149,8 +154,8 @@ function saveJSON($urlArray) {
     print_r($JSON);
 
 }
+//metod för att göra requesten till servern och identifierar sig som em222iv
 function curl_get_request($url) {
-
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: em222iv"));
     curl_setopt($ch, CURLOPT_URL, $url);
