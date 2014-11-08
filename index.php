@@ -1,16 +1,17 @@
 <?php
 
 $date = time();
-$data = curl_get_request('https://coursepress.lnu.se/kurser/');
-$dom = new DomDocument();
-$array = array("time" => $date."<br/><br/>");
-
 echo "<form method='post'>";
 echo "<input type='submit' name='submit' value='JSON-file'>";
 echo "</form>";
 echo "<form method='post'>";
 echo "<input type='submit' name='submit1' value='Scrape'>";
 echo "</form>";
+$data = curl_get_request('https://coursepress.lnu.se/kurser/');
+$dom = new DomDocument();
+$array = array("time" => "Tid för senaste skrapningen: " .$date."<br/><br/>");
+
+
 
 $p = json_decode(file_get_contents('filename.json'));
 if($p->{"time"} <= time() - (60*5)){
@@ -129,10 +130,7 @@ function nextPage($dom,$data,$urlArray) {
         }
         if($nextPageUrl == 1){
 
-            $JSON = (object) $urlArray;
-            file_put_contents('filename.json', json_encode($JSON));
-            $JSON = json_decode(file_get_contents('filename.json'));
-            print_r($JSON);
+            saveJSON($urlArray);
         }
         $nextPageUrl = curl_get_request("https://coursepress.lnu.se" . $nextPageUrl);
 
@@ -142,6 +140,15 @@ function nextPage($dom,$data,$urlArray) {
     }
 }
 
+function saveJSON($urlArray) {
+    $amountOfCourses = count($urlArray);
+    array_unshift($urlArray, "Kurser just nu: ".($amountOfCourses= $amountOfCourses-1));
+    $JSON = (object) $urlArray;
+    file_put_contents('filename.json', json_encode($JSON));
+    $JSON = json_decode(file_get_contents('filename.json'));
+    print_r($JSON);
+
+}
 function curl_get_request($url) {
 
     $ch = curl_init();
