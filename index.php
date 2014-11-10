@@ -1,5 +1,6 @@
 <?php
 //hämtar ut tid och visar användaren knapparna för att använda skrapan
+
 $date = time();
 echo "<form method='post'>";
 echo "<input type='submit' name='submit' value='JSON-file'>";
