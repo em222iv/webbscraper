@@ -24,12 +24,11 @@ Det ligger ungefär under samma etiska aspekter som i verkligen, man kan inte ta
 <p/>
 
 <h3>Tänk dig att du skulle skrapa en sida gjord i ASP.NET WebForms. Vad för extra problem skulle man kunna få då?<h3/>
-<p>
+<p>Varje anrop kräver att man skickar med extra information för att behålla AP.NET-aplpikationens "state"
 <p/>
 
 <h3>Välj ut två punkter kring din kod du tycker är värd att diskutera vid redovisningen. Det kan röra val du gjort, tekniska lösningar eller lösningar du inte är riktigt nöjd med.<h3/>
 <p>Nu görs allting via en indexsida. finns det någon speciellt bestpractice eller sätt att bygga en skrapa på?
-
 <p/>
 
 <h3>Hitta ett rättsfall som handlar om webbskrapning. Redogör kort för detta.<h3/>
